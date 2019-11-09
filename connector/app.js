@@ -22,7 +22,7 @@ var app = (function () {
         self.includeMilliseconds = ko.observable(true);
         self.useEsFieldNameAsAliases = ko.observable(false);
         self.useIncludeMilliseconds = ko.observable("When checked, this will include milliseconds when parsing date fields from Elasticsearch.  Ensure your type mapping supports milliseconds.");
-        
+
         self.useEsFieldNameAsAliasesPopoverContent = ko.observable("When checked, this will override the default behavior and field names will be improved similar to how Tableau automatically improves field names of other data sources as defined in the following: <a href=\"http://onlinehelp.tableau.com/current/pro/desktop/en-us/help.htm#data_clean_adm.html\" target=\"_blank\">Tableau Help Article</a>.  Default when unchecked is to use the same names as in the Elasticsearch type.");
 
         self.resultMode = ko.observable("search");
@@ -60,7 +60,7 @@ var app = (function () {
 
                 console.log("[app.init] Elasticsearch connector init fired!");
                 self.setWithTableauConnectionData(connectionData);
-                
+
                 self.loaded(true);
             });
         };
@@ -98,14 +98,14 @@ var app = (function () {
             });
 
             if(connectionData != null){
-                 vm.getElasticsearchFieldData(function(err, fieldData){
-                     if(err){
-                         return;
-                     }
-                      updateIncrementalRefreshColumns(err, fieldData);
+                vm.getElasticsearchFieldData(function(err, fieldData){
+                    if(err){
+                        return;
+                    }
+                    updateIncrementalRefreshColumns(err, fieldData);
 
-                      vm.incrementalRefreshColumn(connectionData.incrementalRefreshColumn);
-                 }, true);
+                    vm.incrementalRefreshColumn(connectionData.incrementalRefreshColumn);
+                }, true);
             }
 
             if (connectionData != null && connectionData.elasticsearchAggregationData != null) {
@@ -146,13 +146,13 @@ var app = (function () {
                         var dateRanges = [];
 
                         _.each(bucket.ranges, function(range){
-                             var vmRange = new self.aggregations.NewRange(range.type, range.from, range.to, range.relativeNumFrom, 
-                                                                          range.relativeNumTo, range.fromRelative, range.toRelative, range.fromType, range.toType);
+                            var vmRange = new self.aggregations.NewRange(range.type, range.from, range.to, range.relativeNumFrom,
+                                range.relativeNumTo, range.fromRelative, range.toRelative, range.fromType, range.toType);
                             ranges.push(vmRange);
                         });
                         _.each(bucket.dateRanges, function(range){
-                             var vmRange = new self.aggregations.NewRange(range.type, range.from, range.to, range.relativeNumFrom, 
-                                                                          range.relativeNumTo, range.fromRelative, range.toRelative, range.fromType, range.toType);
+                            var vmRange = new self.aggregations.NewRange(range.type, range.from, range.to, range.relativeNumFrom,
+                                range.relativeNumTo, range.fromRelative, range.toRelative, range.fromType, range.toType);
                             dateRanges.push(vmRange);
                         });
 
@@ -548,44 +548,44 @@ var app = (function () {
         };
 
         self.getElasticsearchRawAliases = function (cb) {
-            
-                        var connectionData = tableauData.getUnwrapped();
-            
-                        if (!connectionData) {
-                            console.log("[App] getElasticsearchIndices - no connection data, nothing to do");
-                            return;
-                        }
-                        if (!connectionData.elasticsearchUrl) {
-                            console.log("[App] getElasticsearchIndices - no Elasticsearch URL, nothing to do");
-                            return;
-                        }
-            
-                        var connectionUrl = connectionData.elasticsearchUrl.replace(/\/$/, "") + '/_aliases';
-            
-                        var xhr = $.ajax({
-                            url: connectionUrl,
-                            method: 'GET',
-                            contentType: 'application/json',
-                            dataType: 'json',
-                            beforeSend: function (xhr) {
-                                _beforeSendAddAuthHeader(xhr, connectionData);
-                            },
-                            success: function (data) {
-            
-                                self.errorMessage("");
-            
-                                cb(null, data);
-                            },
-                            error: function (xhr, ajaxOptions, err) {
-                                if (xhr.status == 0) {
-                                    cb('Unable to get Elasticsearch aliases, unable to connect to host or CORS request was denied');
-                                }
-                                else {
-                                    cb("Unable to get Elasticsearch aliases, status code:  " + xhr.status + '; ' + xhr.responseText + "\n" + err);
-                                }
-                            }
-                        });
-                    };
+
+            var connectionData = tableauData.getUnwrapped();
+
+            if (!connectionData) {
+                console.log("[App] getElasticsearchIndices - no connection data, nothing to do");
+                return;
+            }
+            if (!connectionData.elasticsearchUrl) {
+                console.log("[App] getElasticsearchIndices - no Elasticsearch URL, nothing to do");
+                return;
+            }
+
+            var connectionUrl = connectionData.elasticsearchUrl.replace(/\/$/, "") + '/_aliases';
+
+            var xhr = $.ajax({
+                url: connectionUrl,
+                method: 'GET',
+                contentType: 'application/json',
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    _beforeSendAddAuthHeader(xhr, connectionData);
+                },
+                success: function (data) {
+
+                    self.errorMessage("");
+
+                    cb(null, data);
+                },
+                error: function (xhr, ajaxOptions, err) {
+                    if (xhr.status == 0) {
+                        cb('Unable to get Elasticsearch aliases, unable to connect to host or CORS request was denied');
+                    }
+                    else {
+                        cb("Unable to get Elasticsearch aliases, status code:  " + xhr.status + '; ' + xhr.responseText + "\n" + err);
+                    }
+                }
+            });
+        };
 
         self.getElasticsearchFieldData = function (cb, initialLoad) {
             var messages = [];
@@ -698,7 +698,7 @@ var app = (function () {
             var isAlias = _.find(self.aliases(), function(alias){
                 return alias == self.elasticsearchIndex();
             });
-            
+
             if (isAlias && !self.elasticsearchAliasIndex()) {
                 validation.messages.push("Elasticsearch Alias Index is required");
                 validation.elasticsearchAliasIndex = true
@@ -708,8 +708,8 @@ var app = (function () {
             }
 
             if (!self.elasticsearchType()) {
-                validation.messages.push("Elasticsearch Type is required");
-                validation.elasticsearchType = true
+                // validation.messages.push("Elasticsearch Type is required");
+                validation.elasticsearchType = false
             }
             else {
                 validation.elasticsearchType = false;
@@ -814,7 +814,7 @@ var app = (function () {
             if(field.name == "_id" || field.name == "_sequence"){
                 return;
             }
-            
+
             vm.incrementalRefreshColumns.push(field);
         });
 
@@ -944,7 +944,7 @@ var app = (function () {
         }
         else{
             tableauData.updateProperties(vm.getTableauConnectionData());
-        }  
+        }
     });
 
     vm.searchCustomQuery.subscribe(function (newValue) {
